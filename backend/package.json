@@ -1,0 +1,20 @@
+{
+  "name": "miss-bug-proj",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon --ignore \"./data\" server.js",
+    "build": "bash build.sh"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cookie-parser": "^1.4.6",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "follow-redirects": "^1.15.6",
+    "nodemon": "^3.1.0"
+  }
+}
