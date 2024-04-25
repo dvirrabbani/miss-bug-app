@@ -6,7 +6,8 @@
   "type": "module",
   "scripts": {
     "dev": "nodemon --ignore \"./data\" server.js",
-    "build": "bash build.sh"
+    "build": "bash build.sh",
+    "start": "node server.js"
   },
   "author": "",
   "license": "ISC",
