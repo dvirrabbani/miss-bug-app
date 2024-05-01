@@ -87,21 +87,21 @@ export async function updateBugCookies(req, res, next) {
     // Cookies are stored as string
     let visitBugIds = req.cookies.visitBugIds || []
 
+    // update "visitBugIds" which holds unique bug ids list
+    if (!visitBugIds.includes(bugId)) {
+      visitBugIds.push(bugId)
+    }
+
     // user can't see more than 3 different bug id's during some time
     if (visitBugIds.length > 3) {
       res.status(401).send("Wait for a bit")
       return
     }
 
-    // update "visitBugIds" which holds unique bug ids list
-    if (!visitBugIds.includes(bugId)) {
-      visitBugIds.push(bugId)
-    }
-
     res.cookie("visitBugIds", visitBugIds, { maxAge: ms("7s") })
 
     next()
   } catch (error) {
-    loggerService.error(`Coudn't update bug's cookies`, error)
+    loggerService.error(`Couldn't update bug's cookies`, error)
   }
 }
