@@ -1,6 +1,7 @@
 import fs from "fs"
-import { utilService } from "./util.service.js"
+import { utilService } from "../../services/util.service.js"
 
+const PAGE_SIZE = 2
 const bugs = utilService.readJsonFile("data/bug.json")
 
 export const bugService = {
@@ -12,13 +13,40 @@ export const bugService = {
 
 async function query(filterBy) {
   try {
-    let { title = "", severity } = filterBy
-    const regexTitleTerm = new RegExp(title, "i")
-    return bugs.filter(
-      (bug) =>
-        regexTitleTerm.test(bug.title) &&
-        (!severity || bug.severity === +severity)
-    )
+    let { txt, minSeverity, pageIdx, sortBy, sortDir, labels } = filterBy
+    const regExpTxt = new RegExp(txt, "i")
+
+    let filteredBugs = bugs.filter((bug) => {
+      return (
+        (!txt ||
+          regExpTxt.test(bug.title) ||
+          regExpTxt.test(bug.description)) &&
+        (!minSeverity || bug.severity >= minSeverity) &&
+        (!labels || labels.every((label) => bug.labels.includes(label)))
+      )
+    })
+
+    switch (sortBy) {
+      case "title":
+        bugs.sort((a, b) => a.title.localeCompare(b.title))
+      case "severity":
+        bugs.sort((a, b) => a.severity - b.severity)
+        break
+    }
+
+    switch (sortDir) {
+      // Descending Order
+      case "-1":
+        bugs.reverse()
+        break
+    }
+
+    if (pageIdx !== undefined) {
+      const startIdx = pageIdx * PAGE_SIZE
+      filteredBugs = filteredBugs.slice(startIdx, startIdx + PAGE_SIZE)
+    }
+
+    return filteredBugs
   } catch (error) {
     throw error
   }
@@ -51,6 +79,7 @@ async function save(bugToSave) {
       bugs[idx] = bugToSave
     } else {
       bugToSave._id = utilService.makeId()
+      bugToSave.createAt = Date.now()
       bugs.push(bugToSave)
     }
     await _saveBugsToFile()
