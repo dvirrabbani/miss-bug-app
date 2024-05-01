@@ -2,6 +2,8 @@ import express from "express"
 import cors from "cors"
 import cookieParser from "cookie-parser"
 import { bugRoutes } from "./api/bug/bug.routes.js"
+import { userRoutes } from "./api/user/user.routes.js"
+
 const app = express()
 
 const corsOptions = {
@@ -20,6 +22,7 @@ app.use(cors(corsOptions))
 app.use(express.json())
 
 app.use("/api/bug", bugRoutes)
+app.use("/api/user", userRoutes)
 app.get("/", (req, res) => res.send("Hello there"))
 
 const port = process.env.PORT || 3030
