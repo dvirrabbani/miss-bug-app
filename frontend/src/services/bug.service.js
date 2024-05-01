@@ -1,6 +1,14 @@
-import axios from "axios"
+import Axios from "axios"
 
-const BASE_URL = "/api/bug"
+var axios = Axios.create({
+  withCredentials: true,
+  baseURL:
+    window.location.hostname === "localhost:3030" ||
+    window.location.hostname === "127.0.0.1:3030"
+      ? "http://localhost:3030/api/bug"
+      : "/api/bug",
+})
+
 export const bugService = {
   query,
   getById,
@@ -9,35 +17,32 @@ export const bugService = {
   getFilterFromParams,
 }
 
-async function query(filterBy) {
-  if (filterBy.severity === 0) {
-    delete filterBy.severity
-  }
-  const { data: bugs } = await axios.get(`${BASE_URL}/`, { params: filterBy })
+async function query(filterBy = {}) {
+  const { data: bugs } = await axios.get("/", { params: filterBy })
   return bugs
 }
+
 async function getById(bugId) {
-  const { data: bug } = await axios.get(`${BASE_URL}/${bugId}`)
+  const { data: bug } = await axios.get(`/${bugId}`)
   return bug
 }
+
 async function remove(bugId) {
-  return axios.get(`${BASE_URL}/${bugId}/remove`)
+  return axios.delete(`/${bugId}`)
 }
+
 async function save(bug) {
-  const { title, severity, _id } = bug
-  let searchParams = _paramsSerializer({ title, severity, _id })
+  const method = bug._id ? "put" : "post"
+  const { data: savedBug } = await axios[method](bug._id || "", bug)
 
-  const { data: bugToSave } = await axios.get(
-    `${BASE_URL}/save?${searchParams}`
-  )
-
-  return bugToSave
+  return savedBug
 }
 
 function getDefaultFilter() {
   return {
-    title: "",
-    severity: "",
+    txt: "",
+    minSeverity: 0,
+    labels: [],
   }
 }
 
@@ -49,14 +54,4 @@ function getFilterFromParams(searchParams) {
     filterBy[field] = searchParams.get(field) || defaultFilter[field]
   }
   return filterBy
-}
-
-function _paramsSerializer(params) {
-  return Object.keys(params)
-    .map((key) => {
-      if (params[key] !== undefined) {
-        return `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`
-      }
-    })
-    .join("&")
 }

@@ -12,25 +12,24 @@ export function BugFilter({ filterBy, onSetFilter }) {
   return (
     <form className="bug-filter" onSubmit={onSubmitFilter}>
       <div className="form-group">
-        <label htmlFor="title">Title</label>
+        <label htmlFor="txt">Text</label>
         <input
           type="text"
-          id="title"
-          placeholder="Search by title"
-          name="title"
+          id="txt"
+          placeholder="Search by text"
+          name="txt"
           onChange={handleChange}
-          value={filterByToEdit.title}
+          value={filterByToEdit.txt}
         />
       </div>
       <div className="form-group">
-        <label htmlFor="severity">Severity</label>
+        <label htmlFor="minSeverity">Severity</label>
         <input
           type="number"
-          id="severity"
+          id="minSeverity"
           min={0}
-          name="severity"
-          placeholder="Search by severity"
-          value={filterByToEdit.severity || ""}
+          name="minSeverity"
+          value={filterByToEdit.minSeverity || 0}
           onChange={handleChange}
         />
       </div>

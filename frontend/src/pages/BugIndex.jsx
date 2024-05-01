@@ -14,33 +14,6 @@ export function BugIndex() {
     bugService.getFilterFromParams(searchParams)
   )
 
-  const BugsPdfDocument = () => (
-    <Document>
-      <Page>
-        <Text>Bugs</Text>
-        {bugs.map((bug) => {
-          return (
-            <Text
-              key={bug._id}
-              style={{ fontSize: "14px", marginTop: "8px", padding: "8px" }}
-            >
-              Bug - Id: {bug._id}, Title: {bug.title}, Severity:{bug.severity}
-            </Text>
-          )
-        })}
-      </Page>
-    </Document>
-  )
-  const PDFDownloader = () => {
-    return (
-      <PDFDownloadLink document={<BugsPdfDocument />} fileName="document.pdf">
-        {({ blob, url, loading, error }) =>
-          loading ? "Loading document..." : <button>Download as PDF</button>
-        }
-      </PDFDownloadLink>
-    )
-  }
-
   useEffect(() => {
     setSearchParams(filterBy)
     loadBugs()
@@ -101,16 +74,48 @@ export function BugIndex() {
     }
   }
 
+  function BugsPdfDocument() {
+    return (
+      <Document>
+        <Page>
+          <Text>Bugs</Text>
+          {bugs.map((bug) => {
+            return (
+              <Text
+                key={bug._id}
+                style={{ fontSize: "14px", marginTop: "8px", padding: "8px" }}
+              >
+                Bug - Id: {bug._id}, Title: {bug.title}, Severity:
+                {bug.severity}
+              </Text>
+            )
+          })}
+        </Page>
+      </Document>
+    )
+  }
+
+  function PDFDownloader() {
+    return (
+      <PDFDownloadLink
+        document={<BugsPdfDocument />}
+        fileName="missBugsReview.pdf"
+      >
+        <button>Download as PDF</button>
+      </PDFDownloadLink>
+    )
+  }
+
   function onSetFilter(fieldsToUpdate) {
     setFilterBy((prevFilterBy) => ({ ...prevFilterBy, ...fieldsToUpdate }))
   }
 
-  const { title, severity } = filterBy
+  const { txt, minSeverity } = filterBy
   return (
     <main className="bug-index">
       <h3>Bugs App</h3>
       <main>
-        <BugFilter filterBy={{ title, severity }} onSetFilter={onSetFilter} />
+        <BugFilter filterBy={{ txt, minSeverity }} onSetFilter={onSetFilter} />
         <button className="add-btn" onClick={onAddBug}>
           Add Bug ⛐
         </button>
