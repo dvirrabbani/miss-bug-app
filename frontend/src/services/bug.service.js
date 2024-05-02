@@ -3,8 +3,7 @@ import Axios from "axios"
 var axios = Axios.create({
   withCredentials: true,
   baseURL:
-    window.location.hostname === "localhost:3030" ||
-    window.location.hostname === "127.0.0.1:3030"
+    window.location.hostname === "localhost"
       ? "http://localhost:3030/api/bug"
       : "/api/bug",
 })
