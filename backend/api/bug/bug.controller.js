@@ -10,7 +10,7 @@ export async function getBugs(req, res) {
     minSeverity: +minSeverity,
     sortBy,
     pageIdx,
-    sortDir,
+    sortDir: +sortDir,
   }
 
   try {

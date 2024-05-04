@@ -11,11 +11,11 @@ export const bugService = {
   save,
 }
 
-async function query(filterBy) {
+async function query(params) {
   try {
-    let { txt, minSeverity, pageIdx, sortBy, sortDir, labels } = filterBy
+    let { txt, minSeverity, pageIdx, sortBy, sortDir, labels } = params
     const regExpTxt = new RegExp(txt, "i")
-
+    // when query param exists apply the correspond filter boolean condition
     let filteredBugs = bugs.filter((bug) => {
       return (
         (!txt ||
@@ -28,16 +28,9 @@ async function query(filterBy) {
 
     switch (sortBy) {
       case "title":
-        bugs.sort((a, b) => a.title.localeCompare(b.title))
+        bugs.sort((a, b) => a.title.localeCompare(b.title) * sortDir)
       case "severity":
-        bugs.sort((a, b) => a.severity - b.severity)
-        break
-    }
-
-    switch (sortDir) {
-      // Descending Order
-      case "-1":
-        bugs.reverse()
+        bugs.sort((a, b) => a.severity - b.severity) * sortDir
         break
     }
 
@@ -48,6 +41,7 @@ async function query(filterBy) {
 
     return filteredBugs
   } catch (error) {
+    // When catch an error, use the error with logger.service() e.g
     throw error
   }
 }

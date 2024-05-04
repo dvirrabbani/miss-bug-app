@@ -1,8 +1,12 @@
-import React from "react"
+import React, { useEffect } from "react"
 import { useForm } from "../customHooks/useForm"
 
 export function BugFilter({ filterBy, onSetFilter }) {
-  const [filterByToEdit, handleChange] = useForm(filterBy)
+  const [filterByToEdit, handleChange, setFields] = useForm(filterBy)
+
+  useEffect(() => {
+    setFields(filterBy)
+  }, [filterBy])
 
   function onSubmitFilter(ev) {
     ev.preventDefault()
@@ -29,7 +33,7 @@ export function BugFilter({ filterBy, onSetFilter }) {
           id="minSeverity"
           min={0}
           name="minSeverity"
-          value={filterByToEdit.minSeverity || 0}
+          value={filterByToEdit.minSeverity}
           onChange={handleChange}
         />
       </div>
