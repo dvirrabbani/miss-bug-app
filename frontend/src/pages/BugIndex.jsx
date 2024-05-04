@@ -5,6 +5,7 @@ import { useState } from "react"
 import { useEffect } from "react"
 import { BugFilter } from "../cmps/bug/BugFilter.jsx"
 import { useSearchParams } from "react-router-dom"
+import { PDFDownloader } from "../cmps/bug/BugPdfDownloader.jsx"
 
 export function BugIndex() {
   const [bugs, setBugs] = useState([])
@@ -94,7 +95,7 @@ export function BugIndex() {
         <button className="add-btn" onClick={onAddBug}>
           Add Bug ⛐
         </button>
-        <PDFDownloader />
+        <PDFDownloader bugs={bugs} />
         <BugList bugs={bugs} onRemoveBug={onRemoveBug} onEditBug={onEditBug} />
       </main>
     </main>

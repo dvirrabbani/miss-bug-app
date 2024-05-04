@@ -1,6 +1,6 @@
 import { Document, Page, Text } from "@react-pdf/renderer"
 
-export function BugsPdfDocument(bugs) {
+export function BugsPdfDocument({ bugs }) {
   return (
     <Document>
       <Page>
