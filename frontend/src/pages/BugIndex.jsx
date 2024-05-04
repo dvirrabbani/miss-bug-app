@@ -1,11 +1,10 @@
 import { bugService } from "../services/bug.service.js"
 import { showSuccessMsg, showErrorMsg } from "../services/event-bus.service.js"
-import { BugList } from "../cmps/BugList.jsx"
+import { BugList } from "../cmps/bug/BugList.jsx"
 import { useState } from "react"
 import { useEffect } from "react"
-import { BugFilter } from "../cmps/BugFilter.jsx"
+import { BugFilter } from "../cmps/bug/BugFilter.jsx"
 import { useSearchParams } from "react-router-dom"
-import { PDFDownloadLink, Document, Page, Text } from "@react-pdf/renderer"
 
 export function BugIndex() {
   const [bugs, setBugs] = useState([])
@@ -15,7 +14,10 @@ export function BugIndex() {
   )
 
   useEffect(() => {
-    setSearchParams(filterBy)
+    updateFilterBy()
+  }, [searchParams])
+
+  useEffect(() => {
     loadBugs()
   }, [filterBy])
 
@@ -26,6 +28,11 @@ export function BugIndex() {
     } catch (error) {
       console.log("Had issues loading robots", error)
     }
+  }
+
+  function updateFilterBy() {
+    const filterByToUpdate = bugService.getFilterFromParams(searchParams)
+    setFilterBy(filterByToUpdate)
   }
 
   async function onRemoveBug(bugId) {
@@ -74,40 +81,8 @@ export function BugIndex() {
     }
   }
 
-  function BugsPdfDocument() {
-    return (
-      <Document>
-        <Page>
-          <Text>Bugs</Text>
-          {bugs.map((bug) => {
-            return (
-              <Text
-                key={bug._id}
-                style={{ fontSize: "14px", marginTop: "8px", padding: "8px" }}
-              >
-                Bug - Id: {bug._id}, Title: {bug.title}, Severity:
-                {bug.severity}
-              </Text>
-            )
-          })}
-        </Page>
-      </Document>
-    )
-  }
-
-  function PDFDownloader() {
-    return (
-      <PDFDownloadLink
-        document={<BugsPdfDocument />}
-        fileName="missBugsReview.pdf"
-      >
-        <button>Download as PDF</button>
-      </PDFDownloadLink>
-    )
-  }
-
   function onSetFilter(fieldsToUpdate) {
-    setFilterBy((prevFilterBy) => ({ ...prevFilterBy, ...fieldsToUpdate }))
+    setSearchParams(fieldsToUpdate)
   }
 
   const { txt, minSeverity } = filterBy
