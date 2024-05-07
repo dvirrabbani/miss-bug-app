@@ -11,9 +11,9 @@ export const bugService = {
   save,
 }
 
-async function query(params) {
+async function query(searchParams) {
   try {
-    let { txt, minSeverity, pageIdx, sortBy, sortDir, labels } = params
+    let { txt, minSeverity, pageIdx, sortBy, sortDir, labels } = searchParams
     const regExpTxt = new RegExp(txt, "i")
     // when query param exists apply the correspond filter boolean condition
     let filteredBugs = bugs.filter((bug) => {
@@ -26,20 +26,30 @@ async function query(params) {
       )
     })
 
-    switch (sortBy) {
-      case "title":
-        bugs.sort((a, b) => a.title.localeCompare(b.title) * sortDir)
-      case "severity":
-        bugs.sort((a, b) => a.severity - b.severity) * sortDir
-        break
+    if (sortBy !== undefined) {
+      switch (sortBy) {
+        case "title":
+          bugs.sort((a, b) => a.title.localeCompare(b.title) * sortDir)
+        case "severity":
+          bugs.sort((a, b) => a.severity - b.severity) * sortDir
+          break
+      }
     }
 
+    let total = 0
+    let paginateBugs = filteredBugs
     if (pageIdx !== undefined) {
-      const startIdx = pageIdx * PAGE_SIZE
-      filteredBugs = filteredBugs.slice(startIdx, startIdx + PAGE_SIZE)
+      const startIdx = (pageIdx - 1) * PAGE_SIZE
+      total = filteredBugs.length
+      paginateBugs = filteredBugs.slice(startIdx, startIdx + PAGE_SIZE)
     }
 
-    return filteredBugs
+    const res = {
+      data: paginateBugs,
+      total,
+    }
+
+    return res
   } catch (error) {
     // When catch an error, use the error with logger.service() e.g
     throw error

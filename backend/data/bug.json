@@ -30,5 +30,23 @@
     "severity": 6,
     "createdAt": 1713891350342,
     "labels": ["need-CR", "dev-branch"]
+  },
+  {
+    "title": "can't upload bug",
+    "severity": 2,
+    "_id": "1GBbwS",
+    "createdAt": 1715088534280
+  },
+  {
+    "title": "can't see all bugs ",
+    "severity": 4,
+    "_id": "iLuJl1",
+    "createdAt": 1715088558505
+  },
+  {
+    "title": "can't filter by text ",
+    "severity": 3,
+    "_id": "0KRrnH",
+    "createdAt": 1715088673781
   }
 ]

@@ -6,9 +6,12 @@ import { useEffect } from "react"
 import { BugFilter } from "../cmps/bug/BugFilter.jsx"
 import { useSearchParams } from "react-router-dom"
 import { PDFDownloader } from "../cmps/bug/BugPdfDownloader.jsx"
+import { Pagination } from "../cmps/Pagination.jsx"
+import { useEffectUpdate } from "../customHooks/useEffectUpdate.js"
 
 export function BugIndex() {
   const [bugs, setBugs] = useState([])
+  const [totalBugs, setTotalBugs] = useState(null)
   const [searchParams, setSearchParams] = useSearchParams()
   const [filterBy, setFilterBy] = useState(
     bugService.getFilterFromParams(searchParams)
@@ -18,14 +21,15 @@ export function BugIndex() {
     updateFilterBy()
   }, [searchParams])
 
-  useEffect(() => {
+  useEffectUpdate(() => {
     loadBugs()
   }, [filterBy])
 
   async function loadBugs() {
     try {
-      const bugs = await bugService.query(filterBy)
+      const { data: bugs, total } = await bugService.query(filterBy)
       setBugs(bugs)
+      setTotalBugs(total)
     } catch (error) {
       console.log("Had issues loading robots", error)
     }
@@ -34,6 +38,13 @@ export function BugIndex() {
   function updateFilterBy() {
     const filterByToUpdate = bugService.getFilterFromParams(searchParams)
     setFilterBy(filterByToUpdate)
+  }
+
+  function handlePageChange(currentPage) {
+    setSearchParams((prevPagination) => {
+      prevPagination.set("pageIdx", currentPage)
+      return prevPagination
+    })
   }
 
   async function onRemoveBug(bugId) {
@@ -56,7 +67,7 @@ export function BugIndex() {
     try {
       const savedBug = await bugService.save(bug)
       console.log("Added Bug", savedBug)
-      setBugs((prevBugs) => [...prevBugs, savedBug])
+      loadBugs()
       showSuccessMsg("Bug added")
     } catch (err) {
       console.log("Error from onAddBug ->", err)
@@ -97,6 +108,13 @@ export function BugIndex() {
         </button>
         <PDFDownloader bugs={bugs} />
         <BugList bugs={bugs} onRemoveBug={onRemoveBug} onEditBug={onEditBug} />
+        {filterBy.pageIdx && totalBugs > 0 && (
+          <Pagination
+            current={filterBy.pageIdx}
+            total={Math.ceil(totalBugs / 2)}
+            onChange={handlePageChange}
+          />
+        )}
       </main>
     </main>
   )
