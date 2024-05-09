@@ -1,10 +1,18 @@
 .bug-filter {
-  display: grid;
-  grid-auto-flow: column;
+  padding: 8px 16px;
+  background-color: #e9cedd;
+  border-radius: 4px;
+}
+
+.bug-filter form {
+  display: flex;
+  flex-wrap: wrap;
   gap: 8px;
-  margin: 16px 0;
   padding: 8px 0px;
-  max-width: 400px;
+}
+
+.bug-filter form .form-group {
+  display: grid;
 }
 
 .bug-filter input {

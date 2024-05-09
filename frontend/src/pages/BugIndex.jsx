@@ -1,13 +1,15 @@
-import { bugService } from "../services/bug.service.js"
-import { showSuccessMsg, showErrorMsg } from "../services/event-bus.service.js"
-import { BugList } from "../cmps/bug/BugList.jsx"
-import { useState } from "react"
-import { useEffect } from "react"
-import { BugFilter } from "../cmps/bug/BugFilter.jsx"
+import { useEffect, useCallback, useState } from "react"
 import { useSearchParams } from "react-router-dom"
-import { PDFDownloader } from "../cmps/bug/BugPdfDownloader.jsx"
-import { Pagination } from "../cmps/Pagination.jsx"
 import { useEffectUpdate } from "../customHooks/useEffectUpdate.js"
+
+import { showSuccessMsg, showErrorMsg } from "../services/event-bus.service.js"
+import { bugService } from "../services/bug.service.js"
+import { utilService } from "../services/util.service.js"
+
+import { BugFilter } from "../cmps/bug/BugFilter.jsx"
+import { PDFDownloader } from "../cmps/bug/BugPdfDownloader.jsx"
+import { BugList } from "../cmps/bug/BugList.jsx"
+import { Pagination } from "../cmps/Pagination.jsx"
 
 export function BugIndex() {
   const [bugs, setBugs] = useState([])
@@ -15,6 +17,11 @@ export function BugIndex() {
   const [searchParams, setSearchParams] = useSearchParams()
   const [filterBy, setFilterBy] = useState(
     bugService.getFilterFromParams(searchParams)
+  )
+
+  const debouncedSetFilter = useCallback(
+    utilService.debounce(onSetFilter, 1000),
+    []
   )
 
   useEffect(() => {
@@ -50,7 +57,7 @@ export function BugIndex() {
   async function onRemoveBug(bugId) {
     try {
       await bugService.remove(bugId)
-      console.log("Deleted Succesfully!")
+      console.log("Deleted Successfully!")
       setBugs((prevBugs) => prevBugs.filter((bug) => bug._id !== bugId))
       showSuccessMsg("Bug removed")
     } catch (err) {
@@ -94,7 +101,7 @@ export function BugIndex() {
   }
 
   function onSetFilter(fieldsToUpdate) {
-    setSearchParams(fieldsToUpdate)
+    setSearchParams({ ...filterBy, ...fieldsToUpdate })
   }
 
   const { txt, minSeverity } = filterBy
@@ -102,7 +109,10 @@ export function BugIndex() {
     <main className="bug-index">
       <h3>Bugs App</h3>
       <main>
-        <BugFilter filterBy={{ txt, minSeverity }} onSetFilter={onSetFilter} />
+        <BugFilter
+          filterBy={{ txt, minSeverity }}
+          onSetFilter={debouncedSetFilter}
+        />
         <button className="add-btn" onClick={onAddBug}>
           Add Bug ⛐
         </button>
