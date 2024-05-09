@@ -26,12 +26,15 @@ async function query(searchParams) {
       )
     })
 
-    if (sortBy !== undefined) {
+    if (sortBy !== undefined && sortDir !== undefined) {
       switch (sortBy) {
         case "title":
           bugs.sort((a, b) => a.title.localeCompare(b.title) * sortDir)
         case "severity":
-          bugs.sort((a, b) => a.severity - b.severity) * sortDir
+          bugs.sort((a, b) => (a.severity < b.severity ? 1 : -1) * sortDir)
+          break
+        case "createdAt":
+          bugs.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1) * sortDir)
           break
       }
     }

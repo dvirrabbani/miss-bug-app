@@ -43,6 +43,8 @@ function getDefaultFilter() {
     minSeverity: 0,
     labels: [],
     pageIdx: 1,
+    sortBy: "",
+    sortDir: "",
   }
 }
 

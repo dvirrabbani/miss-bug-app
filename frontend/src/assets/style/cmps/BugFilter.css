@@ -4,15 +4,16 @@
   border-radius: 4px;
 }
 
-.bug-filter form {
+.bug-filter .col {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
   padding: 8px 0px;
 }
 
-.bug-filter form .form-group {
+.bug-filter .form-group {
   display: grid;
+  align-items: center;
 }
 
 .bug-filter input {
