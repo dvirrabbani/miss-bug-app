@@ -1,19 +1,19 @@
-export function Pagination({ current, total, onChange }) {
-  function renderPageList() {
-    const pageList = []
-    for (let i = 1; i <= total; i++) {
-      pageList.push(
-        <li key={i} className={i === current ? "active" : ""}>
-          <button onClick={() => onChange(i)}>{i}</button>
-        </li>
-      )
-    }
-    return pageList
-  }
+export function Pagination({ current, total, onPageChange }) {
+  const pageIdxList = Array(total)
+    .fill()
+    .map((_, index) => index + 1)
 
   return (
     <section className="pagination">
-      <ul className="clean-list flex">{renderPageList()}</ul>
+      <ul className="clean-list flex">
+        {pageIdxList.map((pageIdx) => {
+          return (
+            <li key={pageIdx} className={pageIdx === current ? "active" : ""}>
+              <button onClick={() => onPageChange(pageIdx)}>{pageIdx}</button>
+            </li>
+          )
+        })}
+      </ul>
     </section>
   )
 }

@@ -11,7 +11,7 @@ export function BugFilter({ filterBy, onSetFilter }) {
   return (
     <section className="bug-filter">
       <h3>Filter</h3>
-      <div className="col">
+      <div className="row">
         <div className="form-group">
           <label htmlFor="txt">Text</label>
           <input
@@ -32,32 +32,6 @@ export function BugFilter({ filterBy, onSetFilter }) {
             value={filterByToEdit.minSeverity}
             onChange={handleChange}
           />
-        </div>
-      </div>
-      <h3>Sort</h3>
-      <div className="col">
-        <div className="form-group">
-          <select
-            name="sortBy"
-            value={filterByToEdit.sortBy}
-            onChange={handleChange}
-          >
-            <option value="">Sort By</option>
-            <option value="title">Title</option>
-            <option value="severity">Severity</option>
-            <option value="createdAt">Date</option>
-          </select>
-        </div>
-        <div className="form-group">
-          <select
-            name="sortDir"
-            value={filterByToEdit.sortDir}
-            onChange={handleChange}
-          >
-            <option value="">Order</option>
-            <option value="1">Ascending</option>
-            <option value="-1">Descending</option>
-          </select>
         </div>
       </div>
     </section>

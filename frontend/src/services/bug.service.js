@@ -43,8 +43,6 @@ function getDefaultFilter() {
     minSeverity: 0,
     labels: [],
     pageIdx: 1,
-    sortBy: "",
-    sortDir: "",
   }
 }
 
@@ -53,11 +51,11 @@ function getFilterFromParams(searchParams) {
   const filterBy = {}
 
   for (const field in defaultFilter) {
+    let val = searchParams.get(field) || defaultFilter[field]
     if (typeof defaultFilter[field] === "number") {
-      filterBy[field] = +searchParams.get(field) || defaultFilter[field]
-    } else {
-      filterBy[field] = searchParams.get(field) || defaultFilter[field]
+      val = +val
     }
+    filterBy[field] = val
   }
   return filterBy
 }

@@ -13,9 +13,9 @@ export const bugService = {
 
 async function query(searchParams) {
   try {
-    let { txt, minSeverity, pageIdx, sortBy, sortDir, labels } = searchParams
+    let { txt, minSeverity, pageIdx, labels } = searchParams
     const regExpTxt = new RegExp(txt, "i")
-    // when query param exists apply the correspond filter boolean condition
+
     let filteredBugs = bugs.filter((bug) => {
       return (
         (!txt ||
@@ -25,19 +25,6 @@ async function query(searchParams) {
         (!labels || labels.every((label) => bug.labels.includes(label)))
       )
     })
-
-    if (sortBy !== undefined && sortDir !== undefined) {
-      switch (sortBy) {
-        case "title":
-          bugs.sort((a, b) => a.title.localeCompare(b.title) * sortDir)
-        case "severity":
-          bugs.sort((a, b) => (a.severity < b.severity ? 1 : -1) * sortDir)
-          break
-        case "createdAt":
-          bugs.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1) * sortDir)
-          break
-      }
-    }
 
     let total = 0
     let paginateBugs = filteredBugs

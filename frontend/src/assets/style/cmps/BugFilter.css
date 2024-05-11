@@ -4,7 +4,7 @@
   border-radius: 4px;
 }
 
-.bug-filter .col {
+.bug-filter .row {
   display: flex;
   flex-wrap: wrap;
   gap: 8px;

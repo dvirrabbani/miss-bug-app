@@ -32,40 +32,6 @@ export function BugIndex() {
     loadBugs()
   }, [filterBy])
 
-  async function loadBugs() {
-    try {
-      const { data: bugs, total } = await bugService.query(filterBy)
-      setBugs(bugs)
-      setTotalBugs(total)
-    } catch (error) {
-      console.log("Had issues loading robots", error)
-    }
-  }
-
-  function updateFilterBy() {
-    const filterByToUpdate = bugService.getFilterFromParams(searchParams)
-    setFilterBy(filterByToUpdate)
-  }
-
-  function handlePageChange(currentPage) {
-    setSearchParams((prevPagination) => {
-      prevPagination.set("pageIdx", currentPage)
-      return prevPagination
-    })
-  }
-
-  async function onRemoveBug(bugId) {
-    try {
-      await bugService.remove(bugId)
-      console.log("Deleted Successfully!")
-      setBugs((prevBugs) => prevBugs.filter((bug) => bug._id !== bugId))
-      showSuccessMsg("Bug removed")
-    } catch (err) {
-      console.log("Error from onRemoveBug ->", err)
-      showErrorMsg("Cannot remove bug")
-    }
-  }
-
   async function onAddBug() {
     const bug = {
       title: prompt("Bug title?"),
@@ -79,6 +45,18 @@ export function BugIndex() {
     } catch (err) {
       console.log("Error from onAddBug ->", err)
       showErrorMsg("Cannot add bug")
+    }
+  }
+
+  async function onRemoveBug(bugId) {
+    try {
+      await bugService.remove(bugId)
+      console.log("Deleted Successfully!")
+      setBugs((prevBugs) => prevBugs.filter((bug) => bug._id !== bugId))
+      showSuccessMsg("Bug removed")
+    } catch (err) {
+      console.log("Error from onRemoveBug ->", err)
+      showErrorMsg("Cannot remove bug")
     }
   }
 
@@ -100,8 +78,30 @@ export function BugIndex() {
     }
   }
 
+  function onPageChange(currentPage) {
+    setSearchParams((prevPagination) => {
+      prevPagination.set("pageIdx", currentPage)
+      return prevPagination
+    })
+  }
+
   function onSetFilter(fieldsToUpdate) {
     setSearchParams({ ...filterBy, ...fieldsToUpdate })
+  }
+
+  async function loadBugs() {
+    try {
+      const { data: bugs, total } = await bugService.query(filterBy)
+      setBugs(bugs)
+      setTotalBugs(total)
+    } catch (error) {
+      console.log("Had issues loading robots", error)
+    }
+  }
+
+  function updateFilterBy() {
+    const filterByToUpdate = bugService.getFilterFromParams(searchParams)
+    setFilterBy(filterByToUpdate)
   }
 
   const { txt, minSeverity } = filterBy
@@ -118,11 +118,12 @@ export function BugIndex() {
         </button>
         <PDFDownloader bugs={bugs} />
         <BugList bugs={bugs} onRemoveBug={onRemoveBug} onEditBug={onEditBug} />
+
         {filterBy.pageIdx && totalBugs > 0 && (
           <Pagination
             current={filterBy.pageIdx}
             total={Math.ceil(totalBugs / 2)}
-            onChange={handlePageChange}
+            onPageChange={onPageChange}
           />
         )}
       </main>
