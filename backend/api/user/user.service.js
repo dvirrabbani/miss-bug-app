@@ -8,6 +8,8 @@ export const userService = {
   getById,
   remove,
   save,
+  getByUsername,
+  add,
 }
 
 async function query() {
@@ -52,6 +54,38 @@ async function save(userToSave) {
     return userToSave
   } catch (error) {
     throw error
+  }
+}
+
+async function getByUsername(username) {
+  try {
+    const user = users.find((user) => user.username === username)
+    return user
+  } catch (error) {
+    throw error
+  }
+}
+
+async function add(user) {
+  try {
+    // Validate that there are no such user:
+    const existUser = await getByUsername(user.username)
+    if (existUser) throw new Error("Username taken")
+
+    // peek only updatable fields!
+    const userToAdd = {
+      username: user.username,
+      password: user.password,
+      fullname: user.fullname,
+      score: user.score || 0,
+    }
+    // const collection = await dbService.getCollection("user")
+    // await collection.insertOne(userToAdd)
+    save(userToAdd)
+    return userToAdd
+  } catch (err) {
+    loggerService.error("cannot insert user", err)
+    throw err
   }
 }
 

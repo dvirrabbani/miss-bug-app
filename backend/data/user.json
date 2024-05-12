@@ -14,5 +14,13 @@
     "password": "jhon1234",
     "score": 200,
     "createdAt": 1714599894483
+  },
+  {
+    "username": "muki signup",
+    "password": "$2b$10$DPE0dXrrYcFQoDl3Zj1Oe.dqJmHN/yF6q0GnotHG7GIEtEHUUzONe",
+    "fullname": "signup user",
+    "score": 0,
+    "_id": "5cLH6B",
+    "createdAt": 1715507165844
   }
 ]
