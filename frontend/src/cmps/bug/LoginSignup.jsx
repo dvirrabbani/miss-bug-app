@@ -1,7 +1,8 @@
 import { useState } from "react"
 import { useForm } from "../../customHooks/useForm"
 import { showErrorMsg, showSuccessMsg } from "../../services/event-bus.service"
-import { userService } from "../../services/user.service.local"
+// import { userService } from "../../services/user.service.local"
+import { userService } from "../../services/user.service"
 
 export function LoginSignup({ onSetUser }) {
   const [isSignup, setIsSignup] = useState(false)
