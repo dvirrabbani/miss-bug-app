@@ -1,14 +1,16 @@
-import { httpService } from "./http.service"
+import { httpService } from "../http.service"
 
 const AUTH_BASE_URL = "/auth"
+const USER_BASE_URL = "/user"
 const STORAGE_KEY_LOGGEDIN_USER = "loggedinUser"
 
-export const userService = {
+export const _userService = {
   login,
   signup,
   logout,
   getLoggedinUser,
   getEmptyCredentials,
+  getById,
 }
 
 function getLoggedinUser() {
@@ -50,6 +52,14 @@ async function logout() {
     await httpService.post(AUTH_BASE_URL + "/logout")
   } catch (err) {
     console.log(err)
+  }
+}
+
+async function getById(userId) {
+  try {
+    return await httpService.get(USER_BASE_URL + "/" + userId)
+  } catch (err) {
+    console.log(err, "unable to load user")
   }
 }
 

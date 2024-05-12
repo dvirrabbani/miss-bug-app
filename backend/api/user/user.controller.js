@@ -16,6 +16,7 @@ export async function getUser(req, res) {
     const userId = req.params.userId
     console.log("userId:", userId)
     const user = await userService.getById(userId)
+    delete user.password
     console.log("user:", user)
     res.send(user)
   } catch (error) {

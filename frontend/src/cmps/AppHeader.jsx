@@ -2,8 +2,7 @@ import { useState } from "react"
 import { Link, NavLink, useNavigate } from "react-router-dom"
 import { LoginSignup } from "./bug/LoginSignup"
 import { showErrorMsg } from "../services/event-bus.service"
-// import { userService } from "../services/user.service.local"
-import { userService } from "../services/user.service"
+import userService from "../services/user"
 
 export function AppHeader() {
   const navigate = useNavigate()

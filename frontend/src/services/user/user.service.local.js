@@ -1,12 +1,13 @@
-import { storageService } from "./async-storage.service"
+import { storageService } from "../async-storage.service"
 
 const STORAGE_KEY_DB = "userDB"
 const STORAGE_KEY_LOGGEDIN_USER = "loggedinUser"
 
-export const userService = {
+export const _userService = {
   login,
   signup,
   logout,
+  getById,
   getLoggedinUser,
   getEmptyCredentials,
 }
@@ -29,13 +30,23 @@ async function signup({ username, password, fullname }) {
 
 async function login({ username, password }) {
   try {
-    const users = await storageService.query(STORAGE_KEY_DB)
+    const users = await storageService.get(STORAGE_KEY_DB)
     const user = users.find(
       (user) => user.username === username && user.password === password
     )
     if (user) {
       return _setLoggedinUser(user)
     }
+  } catch (err) {
+    console.log(err)
+  }
+}
+
+async function getById(userId) {
+  try {
+    const user = await storageService.get(STORAGE_KEY_DB, userId)
+    delete user.password
+    return user
   } catch (err) {
     console.log(err)
   }
