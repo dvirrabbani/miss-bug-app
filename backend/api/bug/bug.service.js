@@ -1,5 +1,6 @@
 import fs from "fs"
 import { utilService } from "../../services/util.service.js"
+import { loggerService } from "../../services/logger.service.js"
 
 const PAGE_SIZE = 2
 const bugs = utilService.readJsonFile("data/bug.json")
@@ -65,19 +66,29 @@ async function remove(bugId) {
   }
 }
 
-async function save(bugToSave) {
+async function save(bug, loggedinUser) {
   try {
-    if (bugToSave._id) {
-      const idx = bugs.findIndex((bug) => bug._id === bugToSave._id)
-      if (idx < 0) throw `Cant find bug with _id ${bugToSave._id}`
-      bugs[idx] = bugToSave
-    } else {
-      bugToSave._id = utilService.makeId()
-      bugToSave.createdAt = Date.now()
-      bugs.push(bugToSave)
+    // update bug
+    if (bug?._id) {
+      const idx = bugs.findIndex((bug) => bug._id === bug._id)
+      if (idx < 0) throw `Cant find bug with _id ${bug._id}`
+      if (bug?.owner?._id !== loggedinUser._id) {
+        loggerService.error(
+          `unauthorize user._id ${loggedinUser._id} to update ${bug._id}`
+        )
+      }
+      bugs[idx] = bug
     }
+    //create new bug
+    else {
+      bug._id = utilService.makeId()
+      bug.owner = loggedinUser
+      bug.createdAt = Date.now()
+      bugs.push(bug)
+    }
+
     await _saveBugsToFile()
-    return bugToSave
+    return bug
   } catch (error) {
     throw error
   }

@@ -59,9 +59,9 @@ export async function removeBug(req, res) {
 export async function updateBug(req, res) {
   const { _id, title, severity } = req.body
   let bugToSave = { _id, title, severity: +severity }
-
+  const loggedInUser = req.loggedinUser
   try {
-    bugToSave = await bugService.save(bugToSave)
+    bugToSave = await bugService.save(bugToSave, loggedInUser)
     res.send(bugToSave)
   } catch (error) {
     loggerService.error(`Could'nt save bug`, error)
@@ -72,8 +72,9 @@ export async function updateBug(req, res) {
 export async function addBug(req, res) {
   const { title, severity } = req.body
   let bugToSave = { title, severity: +severity }
+  const loggedInUser = req.loggedinUser
   try {
-    bugToSave = await bugService.save(bugToSave)
+    bugToSave = await bugService.save(bugToSave, loggedInUser)
     res.send(bugToSave)
   } catch (error) {
     loggerService.error(`Could'nt save bug`, error)

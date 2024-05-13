@@ -55,7 +55,7 @@ function validateToken(loginToken) {
     const loggedinUser = JSON.parse(json)
     return loggedinUser
   } catch (err) {
-    console.log("Invalid login token")
+    loggerService.warn("Invalid login token")
   }
   return null
 }
