@@ -55,9 +55,17 @@ async function getById(bugId) {
   }
 }
 
-async function remove(bugId) {
+async function remove(bugId, loggedinUser) {
   try {
     const bugIdx = bugs.findIndex((bug) => bug._id === bugId)
+    const bug = bugs[bugIdx]
+
+    if (bug?.owner?._id !== loggedinUser._id) {
+      loggerService.error(
+        `unauthorize user._id ${loggedinUser._id} to update ${bug._id}`
+      )
+    }
+
     bugs.splice(bugIdx, 1)
     _saveBugsToFile()
   } catch (error) {

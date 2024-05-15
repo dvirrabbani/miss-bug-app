@@ -50,7 +50,8 @@ export async function getBug(req, res) {
 export async function removeBug(req, res) {
   try {
     const bugId = req.params.bugId
-    await bugService.remove(bugId)
+    const loggedInUser = req.loggedinUser
+    await bugService.remove(bugId, loggedInUser)
     res.send("deleted")
   } catch (error) {
     loggerService.error(`Could'nt remove bug`, error)
