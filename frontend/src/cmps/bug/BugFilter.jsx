@@ -1,10 +1,10 @@
-import React, { useEffect } from "react"
+import { useEffectUpdate } from "../../customHooks/useEffectUpdate"
 import { useForm } from "../../customHooks/useForm"
 
 export function BugFilter({ filterBy, onSetFilter }) {
   const [filterByToEdit, handleChange] = useForm(filterBy)
 
-  useEffect(() => {
+  useEffectUpdate(() => {
     onSetFilter(filterByToEdit)
   }, [filterByToEdit])
 
