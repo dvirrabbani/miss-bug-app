@@ -1,5 +1,5 @@
 import express from "express"
-import { useAuth, validateAdmin } from "../middlewares/auth.middleware.js"
+import { useAuth } from "../middlewares/auth.middleware.js"
 import {
   addBug,
   getBug,
@@ -10,12 +10,11 @@ import {
 } from "./bug.controller.js"
 
 const router = express.Router()
-router.use(useAuth())
 
 router.get("/", getBugs)
-router.get("/:bugId", updateBugCookies, getBug)
-router.delete("/:bugId", validateAdmin, removeBug)
-router.put("/:bugId", validateAdmin, updateBug)
-router.post("/", addBug)
+router.get("/:bugId", useAuth(), updateBugCookies, getBug)
+router.delete("/:bugId", useAuth({ isAdmin: true }), removeBug)
+router.put("/:bugId", useAuth({ isAdmin: true }), updateBug)
+router.post("/", useAuth(), addBug)
 
 export const bugRoutes = router
