@@ -11,9 +11,9 @@ export const bugService = {
   save,
 }
 
-async function query(searchParams) {
+async function query(params) {
   try {
-    let { txt, minSeverity, page, pageSize, labels } = searchParams
+    let { txt, minSeverity, page, pageSize, labels, ownerId } = params
     const regExpTxt = new RegExp(txt, "i")
 
     let filteredBugs = bugs.filter((bug) => {
@@ -22,7 +22,8 @@ async function query(searchParams) {
           regExpTxt.test(bug.title) ||
           regExpTxt.test(bug.description)) &&
         (!minSeverity || bug.severity >= minSeverity) &&
-        (!labels || labels.every((label) => bug.labels.includes(label)))
+        (!labels || labels.every((label) => bug.labels.includes(label))) &&
+        (!ownerId || bug.owner._id == ownerId)
       )
     })
 

@@ -1,52 +1,44 @@
 [
-  {
-    "_id": "124",
-    "title": "Cannot Save a Car",
-    "description": "problem when clicking on save button",
-    "severity": 3,
-    "createdAt": 1542107359454,
-    "labels": ["critical", "dev-branch"]
-  },
-  {
-    "_id": "125",
-    "title": "Cannot Save a User",
-    "description": "problem when clicking save button",
-    "severity": 3,
-    "createdAt": 1714056706840,
-    "labels": ["critical", "dev-branch"]
-  },
-  {
-    "_id": "126",
-    "title": "Cannot Add a Car",
-    "description": "problem when clicking add car button",
-    "severity": 2,
-    "createdAt": 1714047687343,
-    "labels": ["critical", "need-CR"]
-  },
-  {
-    "_id": "127",
-    "title": "Cannot Delete a Car",
-    "description": "Server problem",
-    "severity": 6,
-    "createdAt": 1713891350342,
-    "labels": ["need-CR", "dev-branch"]
-  },
-  {
-    "title": "can't upload bug",
-    "severity": 2,
-    "_id": "1GBbwS",
-    "createdAt": 1715088534280
-  },
-  {
-    "title": "can't see all bugs ",
-    "severity": 4,
-    "_id": "iLuJl1",
-    "createdAt": 1715088558505
-  },
-  {
-    "title": "can't filter by text ",
-    "severity": 3,
-    "_id": "0KRrnH",
-    "createdAt": 1715088673781
-  }
+    {
+        "title": "32",
+        "severity": 4,
+        "_id": "ZpakDE",
+        "owner": {
+            "_id": "NZJ4hc",
+            "fullname": "test"
+        },
+        "createdAt": 1715606116989
+    },
+    {
+        "title": "bug add",
+        "severity": 2,
+        "_id": "psEePd",
+        "owner": {
+            "_id": "dCWb04",
+            "fullname": "admin",
+            "isAdmin": true
+        },
+        "createdAt": 1715608196067
+    },
+    {
+        "title": "admin to edit",
+        "severity": 6,
+        "_id": "2e3QSI",
+        "owner": {
+            "_id": "dCWb04",
+            "fullname": "admin",
+            "isAdmin": true
+        },
+        "createdAt": 1715608719722
+    },
+    {
+        "title": "my own bug",
+        "severity": 4,
+        "_id": "08q4QE",
+        "owner": {
+            "_id": "CZAkIq",
+            "fullname": "test"
+        },
+        "createdAt": 1715790183811
+    }
 ]

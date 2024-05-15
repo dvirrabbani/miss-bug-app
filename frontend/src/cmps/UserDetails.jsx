@@ -26,8 +26,7 @@ export function UserDetails() {
   return (
     <div className="user-details">
       <h1>User</h1>
-      <h2>Username: {user.username}</h2>
-      <h3>full name: {user.fullname}</h3>
+      <pre>{JSON.stringify(user, null, 2)}</pre>
     </div>
   )
 }

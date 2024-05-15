@@ -1,6 +1,7 @@
 import fs from "fs"
 import { utilService } from "../../services/util.service.js"
 import { loggerService } from "../../services/logger.service.js"
+import { bugService } from "../bug/bug.service.js"
 
 const users = utilService.readJsonFile("data/user.json")
 
@@ -24,6 +25,8 @@ async function query() {
 async function getById(userId) {
   try {
     const user = users.find((user) => user._id === userId)
+    const { data: bugs } = await bugService.query({ ownerId: userId })
+    user.bugs = bugs
     return user
   } catch (error) {
     throw error

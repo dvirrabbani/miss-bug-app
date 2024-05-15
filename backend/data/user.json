@@ -1,26 +1,51 @@
 [
-  {
-    "_id": "u101",
-    "fullname": "Muki Ja",
-    "username": "muki",
-    "password": "muki1234",
-    "score": 100,
-    "createdAt": 1714599894483
-  },
-  {
-    "_id": "u102",
-    "fullname": "Jhon ma",
-    "username": "jhon",
-    "password": "jhon1234",
-    "score": 200,
-    "createdAt": 1714599894483
-  },
-  {
-    "username": "muki signup",
-    "password": "$2b$10$DPE0dXrrYcFQoDl3Zj1Oe.dqJmHN/yF6q0GnotHG7GIEtEHUUzONe",
-    "fullname": "signup user",
-    "score": 0,
-    "_id": "5cLH6B",
-    "createdAt": 1715507165844
-  }
+    {
+        "_id": "u101",
+        "fullname": "Muki Ja",
+        "username": "muki",
+        "password": "muki1234",
+        "score": 100,
+        "createdAt": 1714599894483
+    },
+    {
+        "_id": "u102",
+        "fullname": "Jhon ma",
+        "username": "jhon",
+        "password": "jhon1234",
+        "score": 200,
+        "createdAt": 1714599894483
+    },
+    {
+        "username": "muki signup",
+        "password": "$2b$10$DPE0dXrrYcFQoDl3Zj1Oe.dqJmHN/yF6q0GnotHG7GIEtEHUUzONe",
+        "fullname": "signup user",
+        "score": 0,
+        "_id": "5cLH6B",
+        "createdAt": 1715507165844
+    },
+    {
+        "username": "test",
+        "password": "$2b$10$D.qpRQYzlvKGA6B/6W3aTenMnPPdqrlhDkiesCOX1kFWg0./kHpXa",
+        "fullname": "test",
+        "score": 0,
+        "_id": "CZAkIq",
+        "createdAt": 1715607369500
+    },
+    {
+        "username": "admin",
+        "password": "$2b$10$787h.3zp0yqR5teNgl4I5utMntork4Ky.9cpWhM0qxoCoNwB.zaOS",
+        "fullname": "admin",
+        "isAdmin": true,
+        "score": 0,
+        "_id": "dCWb04",
+        "createdAt": 1715607389205
+    },
+    {
+        "username": "user",
+        "password": "$2b$10$710zGm/ayKmM9eUgd8YiuePPREU5oK2ySjU3UkBkrO2aQHtJvYY3G",
+        "fullname": "user",
+        "score": 0,
+        "_id": "5yUWyN",
+        "createdAt": 1715609561645
+    }
 ]
