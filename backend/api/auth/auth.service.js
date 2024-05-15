@@ -57,5 +57,4 @@ function validateToken(loginToken) {
   } catch (err) {
     loggerService.warn("Invalid login token")
   }
-  return null
 }
