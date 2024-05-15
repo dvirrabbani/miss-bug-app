@@ -27,7 +27,7 @@ export function validateAdmin(req, res, next) {
   const { loggedinUser } = req
   if (!loggedinUser?.isAdmin) {
     loggerService.warn(
-      "user id" + loggedinUser?._id + " attempted to perform admin action"
+      `user _id "${loggedinUser?._id}" attempted to perform admin action`
     )
     res.status(403).send("Not Authorized")
     return
