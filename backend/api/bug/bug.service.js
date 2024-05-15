@@ -2,7 +2,6 @@ import fs from "fs"
 import { utilService } from "../../services/util.service.js"
 import { loggerService } from "../../services/logger.service.js"
 
-const PAGE_SIZE = 2
 const bugs = utilService.readJsonFile("data/bug.json")
 
 export const bugService = {
@@ -14,7 +13,7 @@ export const bugService = {
 
 async function query(searchParams) {
   try {
-    let { txt, minSeverity, pageIdx, labels } = searchParams
+    let { txt, minSeverity, page, pageSize, labels } = searchParams
     const regExpTxt = new RegExp(txt, "i")
 
     let filteredBugs = bugs.filter((bug) => {
@@ -29,10 +28,10 @@ async function query(searchParams) {
 
     let total = 0
     let paginateBugs = filteredBugs
-    if (pageIdx !== undefined) {
-      const startIdx = (pageIdx - 1) * PAGE_SIZE
+    if (page !== undefined && pageSize !== undefined) {
+      const startIdx = (page - 1) * pageSize
       total = filteredBugs.length
-      paginateBugs = filteredBugs.slice(startIdx, startIdx + PAGE_SIZE)
+      paginateBugs = filteredBugs.slice(startIdx, startIdx + pageSize)
     }
 
     const res = {

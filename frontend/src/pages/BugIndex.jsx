@@ -80,7 +80,7 @@ export function BugIndex() {
 
   function onPageChange(currentPage) {
     setSearchParams((prevPagination) => {
-      prevPagination.set("pageIdx", currentPage)
+      prevPagination.set("page", currentPage)
       return prevPagination
     })
   }
@@ -89,22 +89,23 @@ export function BugIndex() {
     setSearchParams({ ...filterBy, ...fieldsToUpdate })
   }
 
+  function updateFilterBy() {
+    const filterByToUpdate = bugService.getFilterFromParams(searchParams)
+    setFilterBy(filterByToUpdate)
+  }
+
   async function loadBugs() {
     try {
       const { data: bugs, total } = await bugService.query(filterBy)
       setBugs(bugs)
       setTotalBugs(total)
     } catch (error) {
-      console.log("Had issues loading robots", error)
+      console.log("Had issues loading Bugs", error)
     }
   }
 
-  function updateFilterBy() {
-    const filterByToUpdate = bugService.getFilterFromParams(searchParams)
-    setFilterBy(filterByToUpdate)
-  }
-
   const { txt, minSeverity } = filterBy
+  const totalBugPages = Math.ceil(totalBugs / filterBy.pageSize)
   return (
     <main className="bug-index">
       <h3>Bugs App</h3>
@@ -119,10 +120,10 @@ export function BugIndex() {
         <PDFDownloader bugs={bugs} />
         <BugList bugs={bugs} onRemoveBug={onRemoveBug} onEditBug={onEditBug} />
 
-        {filterBy.pageIdx && totalBugs > 0 && (
+        {totalBugPages > 0 && (
           <Pagination
-            current={filterBy.pageIdx}
-            total={Math.ceil(totalBugs / 2)}
+            current={filterBy.page}
+            total={totalBugPages}
             onPageChange={onPageChange}
           />
         )}
