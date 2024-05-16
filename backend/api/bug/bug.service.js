@@ -61,10 +61,8 @@ async function remove(bugId, loggedinUser) {
     const bugIdx = bugs.findIndex((bug) => bug._id === bugId)
     const bug = bugs[bugIdx]
 
-    if (bug?.owner?._id !== loggedinUser._id) {
-      loggerService.error(
-        `unauthorize user._id ${loggedinUser._id} to update ${bug._id}`
-      )
+    if (!loggedinUser.isAdmin && bug?.owner?._id !== loggedinUser._id) {
+      throw `unauthorize user with _id ${loggedinUser._id}`
     }
 
     bugs.splice(bugIdx, 1)
@@ -80,12 +78,13 @@ async function save(bug, loggedinUser) {
     if (bug?._id) {
       const idx = bugs.findIndex((bug) => bug._id === bug._id)
       if (idx < 0) throw `Cant find bug with _id ${bug._id}`
-      if (bug?.owner?._id !== loggedinUser._id) {
-        loggerService.error(
-          `unauthorize user._id ${loggedinUser._id} to update ${bug._id}`
-        )
+
+      if (!loggedinUser.isAdmin && bug?.owner?._id !== loggedinUser._id) {
+        throw `unauthorize user with _id ${loggedinUser._id}`
       }
-      bugs[idx] = bug
+
+      const { title, description, severity } = bug
+      bugs[idx] = { title, description, severity }
     }
     //create new bug
     else {
