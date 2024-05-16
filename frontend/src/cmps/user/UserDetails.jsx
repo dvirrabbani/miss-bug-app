@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react"
 import { useParams } from "react-router"
-import { showErrorMsg } from "../services/event-bus.service"
-import userService from "../services/user"
+import { showErrorMsg } from "../../services/event-bus.service"
+import userService from "../../services/user"
+import { BugList } from "../bug/BugList"
 
 export function UserDetails() {
   const [user, setUser] = useState(null)
@@ -26,7 +27,9 @@ export function UserDetails() {
   return (
     <div className="user-details">
       <h1>User</h1>
-      <pre>{JSON.stringify(user, null, 2)}</pre>
+      <h2>username : {user.username}</h2>
+      <h2>full name : {user.fullname}</h2>
+      <BugList bugs={user.bugs} />
     </div>
   )
 }
