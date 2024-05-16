@@ -1,44 +1,12 @@
 [
-    {
-        "title": "32",
-        "severity": 4,
-        "_id": "ZpakDE",
-        "owner": {
-            "_id": "NZJ4hc",
-            "fullname": "test"
-        },
-        "createdAt": 1715606116989
+  {
+    "title": "bug to update",
+    "severity": 3,
+    "_id": "vp6VEZ",
+    "owner": {
+      "_id": "FbVoVR",
+      "fullname": "muki ma"
     },
-    {
-        "title": "bug add",
-        "severity": 2,
-        "_id": "psEePd",
-        "owner": {
-            "_id": "dCWb04",
-            "fullname": "admin",
-            "isAdmin": true
-        },
-        "createdAt": 1715608196067
-    },
-    {
-        "title": "admin to edit",
-        "severity": 6,
-        "_id": "2e3QSI",
-        "owner": {
-            "_id": "dCWb04",
-            "fullname": "admin",
-            "isAdmin": true
-        },
-        "createdAt": 1715608719722
-    },
-    {
-        "title": "my own bug",
-        "severity": 4,
-        "_id": "08q4QE",
-        "owner": {
-            "_id": "CZAkIq",
-            "fullname": "test"
-        },
-        "createdAt": 1715790183811
-    }
+    "createdAt": 1715865977209
+  }
 ]

@@ -61,7 +61,11 @@ async function remove(bugId, loggedinUser) {
     const bugIdx = bugs.findIndex((bug) => bug._id === bugId)
     const bug = bugs[bugIdx]
 
-    if (!loggedinUser.isAdmin && bug?.owner?._id !== loggedinUser._id) {
+    if (
+      bug?.owner?._id !== loggedinUser._id &&
+      Object.hasOwn(loggedinUser, "isAdmin") &&
+      !loggedinUser.isAdmin
+    ) {
       throw `unauthorize user with _id ${loggedinUser._id}`
     }
 
@@ -79,12 +83,19 @@ async function save(bug, loggedinUser) {
       const idx = bugs.findIndex((bug) => bug._id === bug._id)
       if (idx < 0) throw `Cant find bug with _id ${bug._id}`
 
-      if (!loggedinUser.isAdmin && bug?.owner?._id !== loggedinUser._id) {
+      if (
+        bug?.owner?._id !== loggedinUser._id &&
+        Object.hasOwn(loggedinUser, "isAdmin") &&
+        !loggedinUser.isAdmin
+      ) {
         throw `unauthorize user with _id ${loggedinUser._id}`
       }
 
       const { title, description, severity } = bug
-      bugs[idx] = { title, description, severity }
+
+      bugs[idx].title = title
+      bugs[idx].description = description
+      bugs[idx].severity = severity
     }
     //create new bug
     else {
