@@ -36,6 +36,13 @@ async function getById(userId) {
 async function remove(userId) {
   try {
     const userIdx = users.findIndex((user) => user._id === userId)
+
+    // Prevent deletion of users that own bugs
+    const { data: userBugs } = await bugService.query({ ownerId: userId })
+    if (userBugs.length > 0) {
+      throw `user with _id ${userToSave._id} has bugs`
+    }
+
     users.splice(userIdx, 1)
     _saveUsersToFile()
   } catch (error) {
