@@ -11,6 +11,7 @@ export const _userService = {
   getLoggedinUser,
   getEmptyCredentials,
   getById,
+  query,
 }
 
 function getLoggedinUser() {
@@ -63,6 +64,14 @@ async function getById(userId) {
   }
 }
 
+async function query() {
+  try {
+    return await httpService.get(USER_BASE_URL + "/")
+  } catch (err) {
+    console.log(err, "unable to load users")
+  }
+}
+
 function getEmptyCredentials() {
   return {
     username: "",
@@ -73,6 +82,11 @@ function getEmptyCredentials() {
 
 function _setLoggedinUser(user) {
   const userToSave = { _id: user._id, fullname: user.fullname }
+
+  if (user.isAdmin) {
+    userToSave.isAdmin = user.isAdmin
+  }
+
   sessionStorage.setItem(STORAGE_KEY_LOGGEDIN_USER, JSON.stringify(userToSave))
   return userToSave
 }
