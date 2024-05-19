@@ -5,20 +5,27 @@
   "main": "server.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon --ignore \"./data\" server.js",
     "build": "bash build.sh",
-    "start": "node server.js"
+    "start": "node server.js",
+    "server:dev": "nodemon --ignore \"./data\" server.js",
+    "server:dev:prod": "set NODE_ENV=production& nodemon server.js",
+    "server:prod": "set NODE_ENV=production&node server.js",
+    "server:prod:mac": "export NODE_ENV=production && node server.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "bcrypt": "^5.1.1",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
     "cryptr": "^6.3.0",
-    "bcrypt": "^5.1.1",
     "express": "^4.19.2",
     "follow-redirects": "^1.15.6",
-    "ms": "^2.1.3",
+    "mongodb": "^6.6.2",
+    "ms": "^2.1.3"
+  },
+  "devDependencies": {
+    "dotenv": "^16.4.5",
     "nodemon": "^3.1.0"
   }
 }

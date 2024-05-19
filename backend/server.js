@@ -1,4 +1,5 @@
 import express from "express"
+import "dotenv/config"
 import cors from "cors"
 import cookieParser from "cookie-parser"
 import { bugRoutes } from "./api/bug/bug.routes.js"
