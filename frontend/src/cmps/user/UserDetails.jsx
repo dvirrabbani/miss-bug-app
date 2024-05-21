@@ -29,7 +29,6 @@ export function UserDetails() {
       <h1>User</h1>
       <h2>username : {user.username}</h2>
       <h2>full name : {user.fullname}</h2>
-      <BugList bugs={user.bugs} />
     </div>
   )
 }
