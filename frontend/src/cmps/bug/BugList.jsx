@@ -5,6 +5,7 @@ import userService from "../../services/user"
 export function BugList({ bugs, onRemoveBug, onEditBug }) {
   function shouldShowActionBtns(bug) {
     const user = userService.getLoggedinUser()
+
     if (!user) return false
     if (user.isAdmin) return true
     return bug.owner?._id === user._id
@@ -14,7 +15,7 @@ export function BugList({ bugs, onRemoveBug, onEditBug }) {
       {bugs.map((bug) => (
         <li className="bug-preview" key={bug._id}>
           <BugPreview bug={bug} />
-          {shouldShowActionBtns && (
+          {shouldShowActionBtns(bug) && (
             <section className="bug-btn-actions">
               <button
                 onClick={() => {
