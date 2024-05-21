@@ -1,123 +1,92 @@
-import fs from "fs"
-import { utilService } from "../../services/util.service.js"
+import { ObjectId } from "mongodb"
+import { dbService } from "../../services/db.service.js"
 import { loggerService } from "../../services/logger.service.js"
+import { asyncLocalStorage } from "../../services/als.service.js"
 
-const bugs = utilService.readJsonFile("data/bug.json")
+const COLL_NAME = "bug"
+const collection = await dbService.getCollection(COLL_NAME)
 
 export const bugService = {
   query,
   getById,
   remove,
-  save,
+  add,
+  update,
 }
 
-async function query(params) {
+const PAGE_SIZE = 5
+
+async function query(filterBy = { txt: "" }) {
   try {
-    let { txt, minSeverity, page, pageSize, labels, ownerId } = params
-    const regExpTxt = new RegExp(txt, "i")
+    const criteria = {
+      title: { $regex: filterBy.txt, $options: "i" },
+    }
+    const total = await collection.countDocuments(criteria)
+    const bugCursor = await collection.find(criteria)
 
-    let filteredBugs = bugs.filter((bug) => {
-      return (
-        (!txt ||
-          regExpTxt.test(bug.title) ||
-          regExpTxt.test(bug.description)) &&
-        (!minSeverity || bug.severity >= minSeverity) &&
-        (!labels || labels.every((label) => bug.labels.includes(label))) &&
-        (!ownerId || bug.owner._id == ownerId)
-      )
-    })
-
-    let total = 0
-    let paginateBugs = filteredBugs
-    if (page !== undefined && pageSize !== undefined) {
-      const startIdx = (page - 1) * pageSize
-      total = filteredBugs.length
-      paginateBugs = filteredBugs.slice(startIdx, startIdx + pageSize)
+    if (filterBy.pageIdx !== undefined) {
+      const perPage = filterBy.perPage || PAGE_SIZE
+      const startIdx = (filterBy.pageIdx - 1) * perPage
+      bugCursor.skip(startIdx).limit(perPage)
     }
 
-    const res = {
-      data: paginateBugs,
-      total,
-    }
+    const bugs = await bugCursor.toArray()
 
-    return res
-  } catch (error) {
-    // When catch an error, use the error with logger.service() e.g
-    throw error
+    return { bugs, total }
+  } catch (err) {
+    loggerService.error("cannot find bugs", err)
+    throw err
   }
 }
 
 async function getById(bugId) {
   try {
-    const bug = bugs.find((bug) => bug._id === bugId)
+    const bug = await collection.findOne({ _id: new ObjectId(bugId) })
+    bug.createdAt = new ObjectId(bug._id).getTimestamp()
+
     return bug
-  } catch (error) {
-    throw error
+  } catch (err) {
+    loggerService.error(`while finding bug ${bugId}`, err)
+    throw err
   }
 }
 
-async function remove(bugId, loggedinUser) {
+async function remove(bugId) {
   try {
-    const bugIdx = bugs.findIndex((bug) => bug._id === bugId)
-    const bug = bugs[bugIdx]
-
-    if (
-      bug?.owner?._id !== loggedinUser._id &&
-      Object.hasOwn(loggedinUser, "isAdmin") &&
-      !loggedinUser.isAdmin
-    ) {
-      throw `unauthorize user with _id ${loggedinUser._id}`
-    }
-
-    bugs.splice(bugIdx, 1)
-    _saveBugsToFile()
-  } catch (error) {
-    throw error
-  }
-}
-
-async function save(bug, loggedinUser) {
-  try {
-    // update bug
-    if (bug?._id) {
-      const idx = bugs.findIndex((bug) => bug._id === bug._id)
-      if (idx < 0) throw `Cant find bug with _id ${bug._id}`
-
-      if (
-        bug?.owner?._id !== loggedinUser._id &&
-        Object.hasOwn(loggedinUser, "isAdmin") &&
-        !loggedinUser.isAdmin
-      ) {
-        throw `unauthorize user with _id ${loggedinUser._id}`
-      }
-
-      const { title, description, severity } = bug
-
-      bugs[idx].title = title
-      bugs[idx].description = description
-      bugs[idx].severity = severity
-    }
-    //create new bug
-    else {
-      bug._id = utilService.makeId()
-      bug.owner = loggedinUser
-      bug.createdAt = Date.now()
-      bugs.push(bug)
-    }
-
-    await _saveBugsToFile()
-    return bug
-  } catch (error) {
-    throw error
-  }
-}
-
-function _saveBugsToFile(path = "./data/bug.json") {
-  return new Promise((resolve, reject) => {
-    const data = JSON.stringify(bugs, null, 4)
-    fs.writeFile(path, data, (err) => {
-      if (err) return reject(err)
-      resolve()
+    await collection.deleteOne({
+      _id: new ObjectId(bugId),
     })
-  })
+    return bugId
+  } catch (err) {
+    loggerService.error(`cannot remove bug ${bugId}`, err)
+    throw err
+  }
+}
+
+async function update(bug) {
+  try {
+    const bugToSave = {
+      title: bug.title,
+      severity: bug.severity,
+    }
+
+    await collection.updateOne(
+      { _id: new ObjectId(bug._id) },
+      { $set: bugToSave }
+    )
+    return bug
+  } catch (err) {
+    loggerService.error(`cannot update bug ${bug?._id}`, err)
+    throw err
+  }
+}
+
+async function add(bug) {
+  try {
+    await collection.insertOne(bug)
+    return bug
+  } catch (err) {
+    loggerService.error("cannot insert bug", err)
+    throw err
+  }
 }

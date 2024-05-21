@@ -1,5 +1,5 @@
 import express from "express"
-import { requireAuth } from "../middlewares/auth.middleware.js"
+import { requireAuth } from "../../middlewares/auth.middleware.js"
 import {
   addBug,
   getBug,

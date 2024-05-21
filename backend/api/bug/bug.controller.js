@@ -1,87 +1,94 @@
 import ms from "ms"
 import { bugService as bugService } from "./bug.service.js"
 import { loggerService } from "../../services/logger.service.js"
+import { asyncLocalStorage } from "../../services/als.service.js"
 
 export async function getBugs(req, res) {
-  const { txt, minSeverity, page, pageSize, sortBy, sortDir, labels } =
-    req.query
-
-  const query = {
-    txt,
-    minSeverity: +minSeverity,
-    sortBy,
-    page: +page,
-    pageSize: +pageSize,
-    sortDir: +sortDir,
-  }
+  const { txt, minSeverity, pageIdx, perPage } = req.query
 
   try {
-    if (labels) {
-      filterBy.labels = JSON.parse(labels)
+    loggerService.debug("Getting Bugs:", req.query)
+    const filterBy = {
+      txt,
+      minSeverity: +minSeverity,
+      pageIdx: +pageIdx,
+      perPage: +perPage,
     }
-  } catch (error) {
-    res.status(400).send("invalid query")
-    loggerService.warn("invalid labels format")
-    return
-  }
 
-  try {
-    const bugs = await bugService.query(query)
-    res.send(bugs)
-  } catch (error) {
-    loggerService.error(`Could'nt get bugs`, error)
-    res.status(400).send(`Could'nt get bugs`)
+    const bugs = await bugService.query(filterBy)
+    res.json(bugs)
+  } catch (err) {
+    loggerService.error("Failed to get bugs", err)
+    res.status(400).send({ err: "Failed to get bugs" })
   }
 }
 
 export async function getBug(req, res) {
   try {
     const bugId = req.params.bugId
-    console.log("bugId:", bugId)
     const bug = await bugService.getById(bugId)
-    console.log("bug:", bug)
-    res.send(bug)
-  } catch (error) {
-    loggerService.error(`Could'nt get bug`, error)
-    res.status(400).send(`Could'nt get bug`)
+    res.json(bug)
+  } catch (err) {
+    loggerService.error("Failed to get bug", err)
+    res.status(400).send({ err: "Failed to get bug" })
   }
 }
 
 export async function removeBug(req, res) {
+  const bugId = req.params.bugId
+  const { loggedinUser } = asyncLocalStorage.getStore()
   try {
-    const bugId = req.params.bugId
-    const loggedInUser = req.loggedinUser
-    await bugService.remove(bugId, loggedInUser)
-    res.send("deleted")
-  } catch (error) {
-    loggerService.error(`Could'nt remove bug`, error)
-    res.status(400).send(`Could'nt remove bug`)
+    const bug = await bugService.getById(bugId)
+
+    if (
+      !(bug?.owner?._id === loggedinUser._id || loggedinUser.isAdmin === true)
+    ) {
+      res.status(401).send({ err: "Not Authorize" })
+      return
+    }
+
+    const removedId = await bugService.remove(bugId)
+    res.send(removedId)
+  } catch (err) {
+    loggerService.error("Failed to remove bug", err)
+    res.status(400).send({ err: "Failed to remove bug" })
   }
 }
 
 export async function updateBug(req, res) {
-  const { _id, title, severity } = req.body
-  let bugToSave = { _id, title, severity: +severity }
-  const loggedInUser = req.loggedinUser
+  const bugToUpdate = req.body
+  const { loggedinUser } = asyncLocalStorage.getStore()
   try {
-    bugToSave = await bugService.save(bugToSave, loggedInUser)
-    res.send(bugToSave)
-  } catch (error) {
-    loggerService.error(`Could'nt save bug`, error)
-    res.status(400).send(`Could'nt save bug`)
+    if (
+      !(
+        bugToUpdate?.owner?._id === loggedinUser._id ||
+        loggedinUser.isAdmin === true
+      )
+    ) {
+      res.status(401).send({ err: "Not Authorize" })
+      return
+    }
+    const updatedBug = await bugService.update(bugToUpdate)
+    res.json(updatedBug)
+  } catch (err) {
+    loggerService.error("Failed to get bug", err)
+    res.status(400).send({ err: "Failed to get bug" })
   }
 }
 
 export async function addBug(req, res) {
   const { title, severity } = req.body
-  let bugToSave = { title, severity: +severity }
-  const loggedInUser = req.loggedinUser
+  const { loggedinUser } = asyncLocalStorage.getStore()
+
+  const bugToSave = { title, severity: +severity }
+  bugToSave.owner = loggedinUser
+
   try {
-    bugToSave = await bugService.save(bugToSave, loggedInUser)
-    res.send(bugToSave)
+    const addedBug = await bugService.add(bugToSave)
+    res.send(addedBug)
   } catch (error) {
-    loggerService.error(`Could'nt save bug`, error)
-    res.status(400).send(`Could'nt save bug`)
+    loggerService.error("Failed to get bug", err)
+    res.status(400).send({ err: "Failed to get bug" })
   }
 }
 
