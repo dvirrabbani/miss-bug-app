@@ -39,7 +39,6 @@ export function BugIndex() {
     }
     try {
       const savedBug = await bugService.save(bug)
-      console.log("Added Bug", savedBug)
       loadBugs()
       showSuccessMsg("Bug added")
     } catch (err) {
@@ -51,8 +50,7 @@ export function BugIndex() {
   async function onRemoveBug(bugId) {
     try {
       await bugService.remove(bugId)
-      console.log("Deleted Successfully!")
-      setBugs((prevBugs) => prevBugs.filter((bug) => bug._id !== bugId))
+      loadBugs()
       showSuccessMsg("Bug removed")
     } catch (err) {
       console.log("Error from onRemoveBug ->", err)
@@ -80,7 +78,7 @@ export function BugIndex() {
 
   function onPageChange(currentPage) {
     setSearchParams((prevPagination) => {
-      prevPagination.set("page", currentPage)
+      prevPagination.set("pageIdx", currentPage)
       return prevPagination
     })
   }
@@ -96,7 +94,7 @@ export function BugIndex() {
 
   async function loadBugs() {
     try {
-      const { data: bugs, total } = await bugService.query(filterBy)
+      const { bugs, total } = await bugService.query(filterBy)
       setBugs(bugs)
       setTotalBugs(total)
     } catch (error) {
@@ -105,9 +103,10 @@ export function BugIndex() {
   }
 
   const { txt, minSeverity } = filterBy
-  const totalBugPages = Math.ceil(totalBugs / filterBy.pageSize)
+  const totalBugPages = Math.ceil(totalBugs / filterBy.perPage)
+
   return (
-    <main className="bug-index">
+    <div className="bug-index">
       <h3>Bugs App</h3>
       <main>
         <BugFilter
@@ -122,12 +121,12 @@ export function BugIndex() {
 
         {totalBugPages > 0 && (
           <Pagination
-            current={filterBy.page}
+            current={filterBy.pageIdx}
             total={totalBugPages}
             onPageChange={onPageChange}
           />
         )}
       </main>
-    </main>
+    </div>
   )
 }

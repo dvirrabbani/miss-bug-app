@@ -50,6 +50,7 @@ async function login({ username, password }) {
 
 async function logout() {
   try {
+    sessionStorage.removeItem(STORAGE_KEY_LOGGEDIN_USER)
     await httpService.post(AUTH_BASE_URL + "/logout")
   } catch (err) {
     console.log(err)

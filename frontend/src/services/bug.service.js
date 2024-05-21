@@ -42,8 +42,8 @@ function getDefaultFilter() {
     txt: "",
     minSeverity: 0,
     labels: [],
-    page: 1,
-    pageSize: 5,
+    pageIdx: 1,
+    perPage: 3,
   }
 }
 
