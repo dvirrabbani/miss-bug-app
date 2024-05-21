@@ -23,6 +23,9 @@ app.use(cookieParser())
 app.use(cors(corsOptions))
 app.use(express.json())
 
+import { setupAsyncLocalStorage } from "./middlewares/setupAls.middleware.js"
+app.all("*", setupAsyncLocalStorage)
+
 app.use("/api/bug", bugRoutes)
 app.use("/api/user", userRoutes)
 app.use("/api/auth", authRoutes)
